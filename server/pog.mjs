@@ -1,3 +1,5 @@
+import { randomInt } from 'node:crypto';
+
 import { startServer } from './server.mjs';
 
 import { derefPath } from './state.mjs';
@@ -112,7 +114,8 @@ export const g0 = {
   'combat': {
     [AP]: [],
     [CP]: []
-  }
+  },
+  'msg': []
 };
 
 let max_id = 0;
@@ -217,6 +220,10 @@ const g = {
       const deck = derefPath(s, deck_p);
       deck.for_each(card => card._.front = []);
       shuffle(deck);
+    },
+    'roll': (s, num, sides) => {
+      const rolls = [...Array(num)].map(_ => randomInt(0, sides) + 1);
+      s.msg.push({'roll': { 'num': num, 'sides': sides, 'result': rolls }});
     }
   }
 };
